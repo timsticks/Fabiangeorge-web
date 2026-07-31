@@ -1,0 +1,7 @@
+{
+  "name": "fabiangeorge-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fabian George personal site + LINKED-IN book launch, with Vercel serverless functions handling the waitlist and contact forms (Airtable + Resend)."
+}
