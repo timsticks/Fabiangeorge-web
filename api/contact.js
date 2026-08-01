@@ -51,9 +51,10 @@ export default async function handler(req, res) {
       return res.status(502).json({ errors: [{ message: 'Could not save your message. Please try again.' }] });
     }
 
-    // 2. Email notification (best-effort: don't fail the whole request if this errors)
+    // 2. Email notification (best-effort: don't fail the whole request if this errors,
+    // but DO log the response body so a rejection is actually visible in Vercel logs)
     try {
-      await fetch('https://api.resend.com/emails', {
+      const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${RESEND_API_KEY}`,
@@ -71,8 +72,12 @@ export default async function handler(req, res) {
           `
         })
       });
+      if (!resendRes.ok) {
+        const resendErrText = await resendRes.text();
+        console.error('Resend rejected the email (contact):', resendRes.status, resendErrText);
+      }
     } catch (emailErr) {
-      console.error('Resend error (contact):', emailErr);
+      console.error('Resend network error (contact):', emailErr);
     }
 
     return res.status(200).json({ ok: true });
