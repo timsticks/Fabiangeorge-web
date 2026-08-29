@@ -61,7 +61,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'LINKED-IN Waitlist <onboarding@resend.dev>',
+          from: 'LINKED-IN Waitlist <hello@fabiangeorge.com>',
           to: NOTIFY_TO_EMAIL,
           subject: 'New LINKED-IN Waitlist Signup',
           html: `
