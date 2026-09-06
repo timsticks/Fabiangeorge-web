@@ -51,34 +51,38 @@ export default async function handler(req, res) {
       return res.status(502).json({ errors: [{ message: 'Could not save your message. Please try again.' }] });
     }
 
-    // 2. Email notification (best-effort: don't fail the whole request if this errors,
-    // but DO log the response body so a rejection is actually visible in Vercel logs)
-    try {
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'Fabian George <hello@fabiangeorge.com>',
-          to: NOTIFY_TO_EMAIL.split(',').map(e => e.trim()),
-          subject: 'New Contact Message, FabianGeorge.com',
-          html: `
-            <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-            <p><strong>Reason:</strong> ${escapeHtml(reason || '—')}</p>
-            <p><strong>Message:</strong><br>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
-          `
-        })
-      });
-      if (!resendRes.ok) {
-        const resendErrText = await resendRes.text();
-        console.error('Resend rejected the email (contact):', resendRes.status, resendErrText);
+    // 2. Email notification — sent as separate individual emails so each
+    // recipient only ever sees their own address in "To", not everyone else's.
+    const recipients = NOTIFY_TO_EMAIL.split(',').map(e => e.trim());
+    for (const recipient of recipients) {
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'Fabian George <hello@fabiangeorge.com>',
+            to: recipient,
+            subject: 'New Contact Message, FabianGeorge.com',
+            html: `
+              <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+              <p><strong>Reason:</strong> ${escapeHtml(reason || '—')}</p>
+              <p><strong>Message:</strong><br>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
+            `
+          })
+        });
+        if (!resendRes.ok) {
+          const resendErrText = await resendRes.text();
+          console.error(`Resend rejected the email (contact) for ${recipient}:`, resendRes.status, resendErrText);
+        }
+      } catch (emailErr) {
+        console.error(`Resend network error (contact) for ${recipient}:`, emailErr);
       }
-    } catch (emailErr) {
-      console.error('Resend network error (contact):', emailErr);
     }
+
 
     return res.status(200).json({ ok: true });
   } catch (err) {
