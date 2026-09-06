@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           from: 'LINKED-IN Waitlist <hello@fabiangeorge.com>',
-          to: NOTIFY_TO_EMAIL,
+          to: NOTIFY_TO_EMAIL.split(',').map(e => e.trim()),
           subject: 'New LINKED-IN Waitlist Signup',
           html: `
             <p><strong>Name:</strong> ${escapeHtml(name)}</p>
