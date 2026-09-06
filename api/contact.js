@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           from: 'Fabian George <hello@fabiangeorge.com>',
-          to: NOTIFY_TO_EMAIL,
+          to: NOTIFY_TO_EMAIL.split(',').map(e => e.trim()),
           subject: 'New Contact Message, FabianGeorge.com',
           html: `
             <p><strong>Name:</strong> ${escapeHtml(name)}</p>
