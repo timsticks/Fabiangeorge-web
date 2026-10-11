@@ -219,7 +219,11 @@
       </div>
       <div class="sm:col-span-2">
         <button type="button" id="dd-discount-toggle" class="text-sm font-semibold underline underline-offset-4" style="color:rgba(10,10,10,0.65);">Have a discount code?</button>
-        <input type="text" name="discountCode" id="dd-discount-input" placeholder="Enter your code" class="hidden mt-3 rounded-lg px-4 py-3.5 text-sm w-full" style="background:rgba(10,10,10,0.06); border:1px dashed rgba(10,10,10,0.35); color:var(--black);">
+        <div id="dd-discount-row" class="hidden mt-3 flex gap-2">
+          <input type="text" name="discountCode" id="dd-discount-input" placeholder="Enter your code" autocomplete="off" class="flex-1 rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px dashed rgba(10,10,10,0.35); color:var(--black);">
+          <button type="button" id="dd-discount-verify" class="rounded-lg px-5 font-bold text-sm flex-shrink-0" style="background:var(--black); color:var(--yellow);">Verify</button>
+        </div>
+        <p id="dd-discount-status" class="hidden mt-2 text-sm font-semibold"></p>
       </div>
       <div class="sm:col-span-2">
         <input type="hidden" name="hearAbout" id="dd-hear-value" value="">
@@ -325,9 +329,54 @@ document.querySelectorAll('.ticket-card input[type="radio"]').forEach(function(r
 var discountToggle = document.getElementById('dd-discount-toggle');
 if(discountToggle){
   discountToggle.addEventListener('click', function(){
-    var input = document.getElementById('dd-discount-input');
-    input.classList.toggle('hidden');
-    if(!input.classList.contains('hidden')) input.focus();
+    var row = document.getElementById('dd-discount-row');
+    row.classList.toggle('hidden');
+    if(!row.classList.contains('hidden')) document.getElementById('dd-discount-input').focus();
+  });
+}
+
+/* instant discount-code check, so a bad code never survives to payment */
+var discountInput = document.getElementById('dd-discount-input');
+var discountVerifyBtn = document.getElementById('dd-discount-verify');
+var discountStatus = document.getElementById('dd-discount-status');
+
+function setDiscountStatus(message, good){
+  discountStatus.textContent = message;
+  discountStatus.style.color = good ? '#15803d' : '#B3121B';
+  discountStatus.classList.remove('hidden');
+}
+
+if(discountInput){
+  discountInput.addEventListener('input', function(){
+    discountStatus.classList.add('hidden');
+  });
+}
+if(discountVerifyBtn){
+  discountVerifyBtn.addEventListener('click', async function(){
+    var code = discountInput.value.trim();
+    if(!code){
+      setDiscountStatus('Enter a code first.', false);
+      return;
+    }
+    discountVerifyBtn.textContent = 'Checking...';
+    discountVerifyBtn.disabled = true;
+    try{
+      var url = '/api/doorsanddeals-quote?code=' + encodeURIComponent(code);
+      if(cityValue.value) url += '&city=' + encodeURIComponent(cityValue.value);
+      var res = await fetch(url);
+      var data = await res.json().catch(function(){ return null; });
+      if(res.ok && data && data.discount && data.discount.ok){
+        setDiscountStatus('✓ ' + data.discount.code + ' applied — ' + naira(data.discount.amountOff) + ' off your ticket.', true);
+      } else if(data && data.discount && data.discount.message){
+        setDiscountStatus(data.discount.message, false);
+      } else {
+        setDiscountStatus(apiError(data, 'Could not verify the code. Please try again.'), false);
+      }
+    } catch(err){
+      setDiscountStatus('Network error, please check your connection and try again.', false);
+    }
+    discountVerifyBtn.textContent = 'Verify';
+    discountVerifyBtn.disabled = false;
   });
 }
 
