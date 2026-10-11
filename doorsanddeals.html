@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Doors &amp; Deals Is Coming Back — Fabian George</title>
-<meta name="description" content="Doors & Deals returns to Lagos, Abuja and Ilorin, and opens for the first time in Ibadan, Abeokuta and Ghana. October to December 2026. Join the waitlist.">
+<meta name="description" content="Register for Doors & Deals — Lagos, Kwara and Abuja. Room Pass and Inner Circle Pass tickets. October to December 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,6 +49,46 @@
   }
 
   .btn-magnetic{will-change:transform;}
+
+  /* --- premium registration controls --- */
+  .price-pill{background:#ffffff; color:var(--black); border:1px solid rgba(10,10,10,0.12); border-radius:18px; padding:20px 22px; box-shadow:0 16px 40px -18px rgba(10,10,10,0.35); display:flex; flex-direction:column;}
+  .price-pill.featured{background:var(--black); color:var(--white); border-color:var(--black); box-shadow:0 16px 40px -14px rgba(10,10,10,0.6);}
+  .price-pill .tier{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0; font-size:11px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; opacity:0.75;}
+  .price-pill .p{display:flex; align-items:baseline; justify-content:space-between; gap:8px; font-family:'Anton',sans-serif; font-size:1.5rem; margin:12px 0 0; letter-spacing:0.01em;}
+  .price-pill .p + .p{margin-top:10px; padding-top:12px; border-top:1px solid rgba(10,10,10,0.12);}
+  .price-pill.featured .p + .p{border-top-color:rgba(250,249,244,0.16);}
+  .price-pill .p small{font-family:'Inter',sans-serif; font-size:0.66rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; opacity:0.55;}
+  .ticket-card{cursor:pointer; transition:border-color .3s ease, box-shadow .3s ease, background .3s ease, transform .3s ease;}
+  .ticket-card:hover{transform:translateY(-2px);}
+  .ticket-card.selected{border-color:var(--black) !important; box-shadow:0 0 0 2px var(--black); background:#ffffff !important;}
+  /* --- inline city cards + hear-about chips (no overlays, nothing to bleed through) --- */
+  .opt-label{display:block; font-size:12px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:rgba(10,10,10,0.55); margin-bottom:8px;}
+  .opt-card{display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:14px 16px; font-size:14px; font-weight:600; color:var(--black); background:rgba(255,255,255,0.55); border:1.5px solid rgba(10,10,10,0.2); border-radius:14px; cursor:pointer; transition:border-color .25s ease, box-shadow .25s ease, background .25s ease, transform .25s ease;}
+  button.opt-card:hover{transform:translateY(-2px); background:#ffffff;}
+  .opt-card.selected{border-color:var(--black); box-shadow:0 0 0 2px var(--black); background:#ffffff;}
+  .opt-card.selected::after{content:'✓'; font-weight:800; margin-left:auto; flex-shrink:0;}
+  .opt-card .dot{width:9px; height:9px; border-radius:50%; background:#16a34a; box-shadow:0 0 0 4px rgba(22,163,74,0.15); flex-shrink:0;}
+  .opt-card .city{flex:1;}
+  .opt-card .sub{display:block; font-size:11px; font-weight:500; color:rgba(10,10,10,0.5);}
+  span.opt-card.disabled{cursor:not-allowed; opacity:0.55;}
+  span.opt-card.disabled .dot{background:rgba(10,10,10,0.25); box-shadow:none;}
+  .dd-badge{font-size:10px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:4px 10px; border-radius:999px; flex-shrink:0;}
+  .dd-badge.open{background:var(--black); color:var(--yellow);}
+  .dd-badge.soon{background:rgba(10,10,10,0.08); color:rgba(10,10,10,0.45);}
+  .chip{padding:10px 18px; font-size:13px; font-weight:700; color:var(--black); background:transparent; border:1.5px solid rgba(10,10,10,0.25); border-radius:999px; cursor:pointer; transition:background .25s ease, color .25s ease, border-color .25s ease;}
+  .chip:hover{border-color:var(--black);}
+  .chip.selected{background:var(--black); color:var(--yellow); border-color:var(--black);}
+  /* --- price states: bold = what you pay, red slash = not applicable --- */
+  .price-pill .p{transition:opacity .3s ease;}
+  .price-pill .p.struck{opacity:0.5;}
+  .price-pill .p.struck .val{text-decoration:line-through; text-decoration-color:var(--red); text-decoration-thickness:2.5px;}
+  .price-pill .p.lead .val{font-weight:800;}
+  .tier-badge{display:inline-block; flex-shrink:0; font-family:'Inter',sans-serif; font-size:10px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:4px 10px; border-radius:999px; margin:0; vertical-align:middle;}
+  .price-pill .tier-badge{background:var(--black); color:var(--yellow);}
+  .price-pill.featured .tier-badge{background:var(--yellow); color:var(--black);}
+  .review-row{display:flex; justify-content:space-between; gap:1rem; padding:11px 0; border-bottom:1px solid rgba(250,249,244,0.12); font-size:14px;}
+  .review-row span{color:rgba(250,249,244,0.55); flex-shrink:0;}
+  .review-row strong{font-weight:600; text-align:right; word-break:break-word;}
 </style>
 </head>
 <body class="antialiased">
@@ -59,7 +99,7 @@
 <header class="fixed top-0 left-0 right-0 z-50" style="background:rgba(10,10,10,0.8); backdrop-filter:blur(14px); border-bottom:1px solid var(--line);">
   <div class="max-w-5xl mx-auto flex items-center justify-between px-6 md:px-10 h-16">
     <a href="/" class="font-display text-xl tracking-wide">FG<span style="color:var(--yellow)">.</span></a>
-    <a href="#waitlist" class="btn-primary btn-magnetic text-xs md:text-sm px-4 md:px-5 py-2.5 rounded-full">Join the Waitlist</a>
+    <a href="#register" class="btn-primary btn-magnetic text-xs md:text-sm px-4 md:px-5 py-2.5 rounded-full">Register Now</a>
   </div>
 </header>
 
@@ -76,7 +116,7 @@
       Three rooms he's already opened doors in. Three he hasn't. One tour, built entirely around access, relationships and the deals that get made in the room, not on the internet.
     </p>
     <p class="reveal mt-8 font-display tracking-wide" style="font-size:clamp(1.1rem,3vw,1.6rem); color:var(--yellow);">October — December 2026</p>
-    <a href="#waitlist" class="reveal btn-primary btn-magnetic inline-block mt-8 px-8 py-4 rounded-full text-sm tracking-wide">Join the Waitlist</a>
+    <a href="#register" class="reveal btn-primary btn-magnetic inline-block mt-8 px-8 py-4 rounded-full text-sm tracking-wide">Register Now</a>
   </div>
 </section>
 
@@ -128,31 +168,107 @@
   </div>
 </section>
 
-<!-- WAITLIST -->
-<section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden" style="background:var(--yellow);">
+<!-- REGISTER -->
+<section id="register" class="relative py-24 md:py-32 px-6 overflow-hidden" style="background:var(--yellow);">
   <div class="absolute inset-0 opacity-[0.06]" style="background-image:repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent 14px);"></div>
   <div class="relative max-w-xl mx-auto text-center" style="color:var(--black);">
     <p class="reveal font-display" style="font-size:clamp(2rem,6vw,3.2rem); line-height:0.95;">Reserve Your Seat.</p>
-    <p class="reveal mt-4 text-base md:text-lg" style="color:rgba(10,10,10,0.75);">Be first to know when dates and tickets open for your city.</p>
+    <p class="reveal mt-4 font-serif italic text-xl md:text-2xl" style="color:rgba(10,10,10,0.82);">Two passes. One room that changes everything.</p>
+    <div class="reveal mt-6 grid sm:grid-cols-2 gap-3 text-left">
+      <div class="price-pill" id="pill-room">
+        <p class="tier">Room Pass<span class="tier-badge" data-tier-badge>Early-bird live</span></p>
+        <p class="p lead" data-early-row><span class="val" data-early-price>&#8358;25,000</span> <small>early-bird</small></p>
+        <p class="p struck" data-regular-row><span class="val" data-regular-price>&#8358;50,000</span> <small>regular</small></p>
+      </div>
+      <div class="price-pill featured" id="pill-inner">
+        <p class="tier">Inner Circle Pass<span class="tier-badge" data-tier-badge>Early-bird live</span></p>
+        <p class="p lead" data-early-row><span class="val" data-early-price>&#8358;50,000</span> <small>early-bird</small></p>
+        <p class="p struck" data-regular-row><span class="val" data-regular-price>&#8358;100,000</span> <small>regular</small></p>
+      </div>
+    </div>
+    <p class="reveal mt-4 text-xs tracking-[0.18em] uppercase" style="color:rgba(10,10,10,0.55);">Early-bird ends 5 days before your city's event</p>
 
-    <form data-endpoint="/api/doorsanddeals" data-success-target="dd-success" class="reveal mt-10 grid sm:grid-cols-2 gap-4 text-left">
-      <input required type="text" name="name" placeholder="Full name" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
-      <input required type="email" name="email" placeholder="Email address" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
-      <input type="tel" name="phone" placeholder="Phone" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
-      <input type="text" name="occupation" placeholder="Occupation" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
-      <select required name="location" class="sm:col-span-2 rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
-        <option value="">Which city are you registering for?</option>
-        <option value="Lagos">Lagos</option>
-        <option value="Abuja">Abuja</option>
-        <option value="Ilorin">Ilorin</option>
-        <option value="Ibadan">Ibadan</option>
-        <option value="Abeokuta">Abeokuta</option>
-        <option value="Ghana">Ghana</option>
-      </select>
-      <textarea name="notes" rows="4" placeholder="Any notes or expectations (optional)" class="sm:col-span-2 rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);"></textarea>
-      <button type="submit" class="sm:col-span-2 mt-2 rounded-full py-4 font-bold tracking-wide text-sm" style="background:var(--black); color:var(--yellow);">Join the Waitlist</button>
+    <form id="dd-register" class="reveal mt-10 grid sm:grid-cols-2 gap-4 text-left">
+      <input required type="text" name="name" placeholder="Full name" autocomplete="name" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+      <input required type="tel" name="phone" placeholder="Mobile number (WhatsApp)" autocomplete="tel" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+      <input required type="email" name="email" placeholder="Email address" autocomplete="email" class="sm:col-span-2 rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+      <input type="text" name="jobTitle" placeholder="Job title / Role (optional)" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+      <input type="text" name="organization" placeholder="Organisation / Company (optional)" autocomplete="organization" class="rounded-lg px-4 py-3.5 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+      <div class="sm:col-span-2">
+        <input type="hidden" name="location" id="dd-city-value" value="">
+        <span class="opt-label">Which city are you registering for?</span>
+        <div class="grid gap-2" id="dd-city-cards">
+          <button type="button" class="opt-card" data-value="Lagos"><span class="dot"></span><span class="city">Lagos<span class="sub">Date to be announced</span></span><span class="dd-badge open">Open</span></button>
+          <button type="button" class="opt-card" data-value="Kwara"><span class="dot"></span><span class="city">Kwara (Ilorin)<span class="sub">Oct 18, 2026</span></span><span class="dd-badge open">Open</span></button>
+          <button type="button" class="opt-card" data-value="Abuja"><span class="dot"></span><span class="city">Abuja<span class="sub">Date to be announced</span></span><span class="dd-badge open">Open</span></button>
+          <span class="opt-card disabled"><span class="dot"></span><span class="city">Ibadan<span class="sub">Dates to be announced</span></span><span class="dd-badge soon">Coming soon</span></span>
+          <span class="opt-card disabled"><span class="dot"></span><span class="city">Abeokuta<span class="sub">Dates to be announced</span></span><span class="dd-badge soon">Coming soon</span></span>
+          <span class="opt-card disabled"><span class="dot"></span><span class="city">Ghana<span class="sub">Dates to be announced</span></span><span class="dd-badge soon">Coming soon</span></span>
+        </div>
+        <p id="dd-city-error" class="hidden mt-2 text-sm font-semibold" style="color:var(--red);">Please choose a city to continue.</p>
+      </div>
+      <div class="sm:col-span-2 grid sm:grid-cols-2 gap-4">
+        <label class="ticket-card rounded-xl px-4 py-4 text-sm cursor-pointer flex items-center gap-3" style="background:rgba(10,10,10,0.06); border:1.5px solid rgba(10,10,10,0.2);">
+          <input required type="radio" name="ticket" value="Room Pass" class="accent-black">
+          <span><strong>Room Pass</strong><br><span style="color:rgba(10,10,10,0.65);">&#8358;25k early &bull; &#8358;50k regular</span></span>
+        </label>
+        <label class="ticket-card rounded-xl px-4 py-4 text-sm cursor-pointer flex items-center gap-3" style="background:rgba(10,10,10,0.06); border:1.5px solid rgba(10,10,10,0.2);">
+          <input required type="radio" name="ticket" value="Inner Circle Pass" class="accent-black">
+          <span><strong>Inner Circle Pass</strong><br><span style="color:rgba(10,10,10,0.65);">&#8358;50k early &bull; &#8358;100k regular</span></span>
+        </label>
+      </div>
+      <div class="sm:col-span-2">
+        <button type="button" id="dd-discount-toggle" class="text-sm font-semibold underline underline-offset-4" style="color:rgba(10,10,10,0.65);">Have a discount code?</button>
+        <input type="text" name="discountCode" id="dd-discount-input" placeholder="Enter your code" class="hidden mt-3 rounded-lg px-4 py-3.5 text-sm w-full" style="background:rgba(10,10,10,0.06); border:1px dashed rgba(10,10,10,0.35); color:var(--black);">
+      </div>
+      <div class="sm:col-span-2">
+        <input type="hidden" name="hearAbout" id="dd-hear-value" value="">
+        <span class="opt-label">How did you hear about the event? <span style="text-transform:none; letter-spacing:0; font-weight:500;">(optional)</span></span>
+        <div class="flex flex-wrap gap-2" id="dd-hear-chips">
+          <button type="button" class="chip" data-value="Instagram">Instagram</button>
+          <button type="button" class="chip" data-value="X (Twitter)">X (Twitter)</button>
+          <button type="button" class="chip" data-value="LinkedIn">LinkedIn</button>
+          <button type="button" class="chip" data-value="TikTok">TikTok</button>
+          <button type="button" class="chip" data-value="WhatsApp">WhatsApp</button>
+          <button type="button" class="chip" data-value="Friend / Referral">Friend / Referral</button>
+          <button type="button" class="chip" data-value="Other">Other</button>
+        </div>
+      </div>
+      <button type="submit" class="sm:col-span-2 mt-2 rounded-full py-4 font-bold tracking-wide text-sm" style="background:var(--black); color:var(--yellow);">Register</button>
     </form>
-    <p id="dd-success" class="hidden mt-6 font-semibold text-lg">You're on the list. See you in the room.</p>
+
+    <div id="dd-review" class="hidden mt-10 rounded-2xl p-8 text-left" style="background:var(--black); color:var(--white);">
+      <p class="font-display text-2xl">Check Your Details</p>
+      <p class="mt-1 text-sm" style="color:rgba(250,249,244,0.6);">Confirm everything below is correct before proceeding to payment.</p>
+      <div id="dd-review-rows" class="mt-5"></div>
+      <div class="mt-7 flex flex-col sm:flex-row gap-3">
+        <button id="dd-edit-back" class="flex-1 rounded-full py-3.5 font-bold text-sm" style="border:1.5px solid rgba(250,249,244,0.35); color:var(--white);">&larr; Edit Details</button>
+        <button id="dd-confirm-pay" class="flex-1 rounded-full py-3.5 font-bold text-sm" style="background:var(--yellow); color:var(--black);">Confirm &amp; Proceed to Payment</button>
+      </div>
+    </div>
+
+    <div id="dd-summary" class="hidden mt-10 rounded-2xl p-8 text-left" style="background:var(--black); color:var(--white);">
+      <p class="font-display text-2xl">Order Summary</p>
+      <div id="dd-summary-rows" class="mt-4 text-sm leading-7" style="color:rgba(250,249,244,0.8);"></div>
+      <button id="dd-pay-now" class="mt-6 w-full rounded-full py-4 font-bold tracking-wide text-sm" style="background:var(--yellow); color:var(--black);">Pay Now</button>
+      <p class="mt-3 text-xs text-center" style="color:rgba(250,249,244,0.5);">Your details are saved. If you leave now, you can resume payment later with your email.</p>
+    </div>
+
+    <div id="dd-success" class="hidden mt-10 rounded-2xl p-8" style="background:var(--black); color:var(--white);">
+      <p class="font-display text-2xl" style="color:var(--yellow);">You're In. See You In The Room.</p>
+      <p class="mt-3 text-sm" style="color:rgba(250,249,244,0.75);">A confirmation email with your ticket is on its way.</p>
+      <p class="mt-5 text-sm tracking-wide">TICKET NUMBER</p>
+      <p id="dd-ticket-number" class="font-display mt-1" style="font-size:clamp(1.6rem,5vw,2.4rem); color:var(--yellow);"></p>
+      <p id="dd-success-detail" class="mt-3 text-sm" style="color:rgba(250,249,244,0.6);"></p>
+    </div>
+
+    <div class="reveal mt-10 text-left rounded-2xl p-6" style="border:1px solid rgba(10,10,10,0.2);">
+      <p class="font-bold text-sm">Started registration but didn't finish paying?</p>
+      <form id="dd-resume" class="mt-3 flex flex-col sm:flex-row gap-3">
+        <input required type="email" name="email" placeholder="Enter your email to continue" class="flex-1 rounded-lg px-4 py-3 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
+        <button type="submit" class="rounded-full px-6 py-3 font-bold text-sm" style="background:var(--black); color:var(--yellow);">Resume Payment</button>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -186,39 +302,267 @@ document.querySelectorAll('.btn-magnetic').forEach(btn=>{
   btn.addEventListener('mouseleave', ()=>{ btn.style.transform = ''; });
 });
 
-document.querySelectorAll('form[data-endpoint]').forEach(form=>{
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    const endpoint = form.dataset.endpoint;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalLabel = submitBtn ? submitBtn.textContent : '';
-    if(submitBtn){ submitBtn.textContent = 'Sending...'; submitBtn.disabled = true; }
+function naira(n){ return '₦' + Number(n || 0).toLocaleString('en-NG'); }
+function apiError(data, fallback){
+  if(data && data.errors) return data.errors.map(function(er){ return er.message; }).join(', ');
+  return fallback;
+}
 
-    const payload = Object.fromEntries(new FormData(form).entries());
+/* ---------- registration: details -> crosscheck -> saved (Interested) -> Paystack ---------- */
+var pendingPaymentUrl = null;
+var pendingPayload = null;
+var registerForm = document.getElementById('dd-register');
 
-    try{
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+/* ticket card selected highlight */
+document.querySelectorAll('.ticket-card input[type="radio"]').forEach(function(radio){
+  radio.addEventListener('change', function(){
+    document.querySelectorAll('.ticket-card').forEach(function(card){ card.classList.remove('selected'); });
+    if(radio.checked) radio.closest('.ticket-card').classList.add('selected');
+  });
+});
 
-      if(response.ok){
-        form.classList.add('hidden');
-        const successEl = document.getElementById(form.dataset.successTarget || 'form-success');
-        if(successEl) successEl.classList.remove('hidden');
-      } else {
-        const data = await response.json().catch(()=>null);
-        const message = data && data.errors ? data.errors.map(er=>er.message).join(', ') : 'Something went wrong. Please try again.';
-        alert(message);
-        if(submitBtn){ submitBtn.textContent = originalLabel; submitBtn.disabled = false; }
-      }
-    } catch(err){
-      alert('Network error, please check your connection and try again.');
-      if(submitBtn){ submitBtn.textContent = originalLabel; submitBtn.disabled = false; }
+/* "Have a discount code?" toggle */
+var discountToggle = document.getElementById('dd-discount-toggle');
+if(discountToggle){
+  discountToggle.addEventListener('click', function(){
+    var input = document.getElementById('dd-discount-input');
+    input.classList.toggle('hidden');
+    if(!input.classList.contains('hidden')) input.focus();
+  });
+}
+
+/* ---------- city cards + hear-about chips (inline, no overlays) ---------- */
+var CITY_NAMES = { Lagos: 'Lagos', Kwara: 'Kwara (Ilorin)', Abuja: 'Abuja' };
+var cityValue = document.getElementById('dd-city-value');
+var cityError = document.getElementById('dd-city-error');
+var hearValue = document.getElementById('dd-hear-value');
+
+document.querySelectorAll('#dd-city-cards .opt-card[data-value]').forEach(function(card){
+  card.addEventListener('click', function(){
+    document.querySelectorAll('#dd-city-cards .opt-card').forEach(function(c){ c.classList.remove('selected'); });
+    card.classList.add('selected');
+    cityValue.value = card.getAttribute('data-value');
+    cityError.classList.add('hidden');
+    refreshPrices(cityValue.value);
+  });
+});
+
+document.querySelectorAll('#dd-hear-chips .chip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    var wasSelected = chip.classList.contains('selected');
+    document.querySelectorAll('#dd-hear-chips .chip').forEach(function(c){ c.classList.remove('selected'); });
+    if(wasSelected){
+      hearValue.value = '';
+    } else {
+      chip.classList.add('selected');
+      hearValue.value = chip.getAttribute('data-value');
     }
   });
 });
+
+/* ---------- live price pills: bold = what you pay, red slash = expired ---------- */
+function setPills(tier, prices){
+  var early = tier === 'Early Bird';
+  document.querySelectorAll('.price-pill').forEach(function(pill){
+    var earlyRow = pill.querySelector('[data-early-row]');
+    var regularRow = pill.querySelector('[data-regular-row]');
+    earlyRow.classList.toggle('lead', early);
+    earlyRow.classList.toggle('struck', !early);
+    regularRow.classList.toggle('lead', !early);
+    regularRow.classList.toggle('struck', early);
+    var badge = pill.querySelector('[data-tier-badge]');
+    if(badge) badge.textContent = early ? 'Early-bird live' : 'Regular price';
+  });
+  if(prices){
+    document.querySelector('#pill-room [data-early-price]').textContent = naira(prices.roomEarly);
+    document.querySelector('#pill-room [data-regular-price]').textContent = naira(prices.roomRegular);
+    document.querySelector('#pill-inner [data-early-price]').textContent = naira(prices.innerEarly);
+    document.querySelector('#pill-inner [data-regular-price]').textContent = naira(prices.innerRegular);
+  }
+}
+
+async function refreshPrices(city){
+  if(!city) return;
+  try{
+    var res = await fetch('/api/doorsanddeals-quote?city=' + encodeURIComponent(city));
+    var data = await res.json().catch(function(){ return null; });
+    if(res.ok && data && data.ok && data.prices){
+      setPills(data.tier, {
+        roomEarly: data.prices.room.early, roomRegular: data.prices.room.regular,
+        innerEarly: data.prices.inner.early, innerRegular: data.prices.inner.regular
+      });
+    }
+  } catch(err){ /* keep static defaults when offline */ }
+}
+
+var REVIEW_LABELS = {
+  name: 'Full name', phone: 'Mobile (WhatsApp)', email: 'Email',
+  jobTitle: 'Job title / Role', organization: 'Organisation / Company',
+  location: 'City', ticket: 'Ticket', discountCode: 'Discount code', hearAbout: 'Heard about us'
+};
+
+/* Step 1: Register -> show crosscheck screen (nothing is sent yet) */
+if(registerForm){
+  registerForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!cityValue.value){
+      cityError.classList.remove('hidden');
+      cityError.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    pendingPayload = Object.fromEntries(new FormData(registerForm).entries());
+    var rows = '';
+    Object.keys(REVIEW_LABELS).forEach(function(key){
+      var val = (pendingPayload[key] || '').toString().trim();
+      if(!val) return;
+      if(key === 'location' && CITY_NAMES[val]) val = CITY_NAMES[val];
+      rows += '<div class="review-row"><span>' + REVIEW_LABELS[key] + '</span><strong>' + escapeHtml(val) + '</strong></div>';
+    });
+    document.getElementById('dd-review-rows').innerHTML = rows;
+    registerForm.classList.add('hidden');
+    var review = document.getElementById('dd-review');
+    review.classList.remove('hidden');
+    review.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+}
+
+/* Step 1b: back to editing (entries are preserved) */
+var editBackBtn = document.getElementById('dd-edit-back');
+if(editBackBtn){
+  editBackBtn.addEventListener('click', function(){
+    document.getElementById('dd-review').classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    registerForm.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+}
+
+/* Step 2: Confirm -> saved as Interested, order summary + Pay Now */
+var confirmBtn = document.getElementById('dd-confirm-pay');
+if(confirmBtn){
+  confirmBtn.addEventListener('click', async function(){
+    var originalLabel = confirmBtn.textContent;
+    confirmBtn.textContent = 'Processing...'; confirmBtn.disabled = true;
+    try{
+      var response = await fetch('/api/doorsanddeals-register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingPayload)
+      });
+      var data = await response.json().catch(function(){ return null; });
+      if(response.ok && data && data.ok){
+        if(data.free){
+          showSuccess(data.ticketNumber, '', '');
+        } else {
+          pendingPaymentUrl = data.authorization_url;
+          document.getElementById('dd-summary-rows').innerHTML =
+            '<p><strong>' + escapeHtml(pendingPayload.ticket) + '</strong> — ' + escapeHtml(pendingPayload.location) + ' (' + escapeHtml(data.tier) + ')</p>' +
+            '<p>Registered for: <strong>' + escapeHtml(pendingPayload.name) + '</strong> (' + escapeHtml(pendingPayload.email) + ')</p>' +
+            '<p>Total due: <strong>' + naira(data.amount) + '</strong></p>';
+          document.getElementById('dd-review').classList.add('hidden');
+          document.getElementById('dd-summary').classList.remove('hidden');
+          document.getElementById('dd-summary').scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      } else {
+        alert(apiError(data, 'Something went wrong. Please try again.'));
+        confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
+      }
+    } catch(err){
+      alert('Network error, please check your connection and try again.');
+      confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
+    }
+  });
+}
+
+var payNowBtn = document.getElementById('dd-pay-now');
+if(payNowBtn){
+  payNowBtn.addEventListener('click', function(){
+    if(pendingPaymentUrl) window.location.href = pendingPaymentUrl;
+  });
+}
+
+/* ---------- resume an unpaid registration by email ---------- */
+var resumeForm = document.getElementById('dd-resume');
+if(resumeForm){
+  resumeForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var btn = resumeForm.querySelector('button[type="submit"]');
+    var label = btn ? btn.textContent : '';
+    if(btn){ btn.textContent = 'Checking...'; btn.disabled = true; }
+    var email = new FormData(resumeForm).get('email');
+    try{
+      var response = await fetch('/api/doorsanddeals-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await response.json().catch(function(){ return null; });
+      if(response.ok && data && data.ok){
+        if(data.free){
+          showSuccess(data.ticketNumber, '', '');
+        } else {
+          if(data.priceChanged) alert('Note: the price changed since you first registered (' + naira(data.amount) + ', ' + data.tier + ').');
+          window.location.href = data.authorization_url;
+        }
+      } else {
+        alert(apiError(data, 'Something went wrong. Please try again.'));
+        if(btn){ btn.textContent = label; btn.disabled = false; }
+      }
+    } catch(err){
+      alert('Network error, please check your connection and try again.');
+      if(btn){ btn.textContent = label; btn.disabled = false; }
+    }
+  });
+}
+
+/* ---------- returning from Paystack: verify and show the ticket ---------- */
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function showSuccess(ticketNumber, ticket, location){
+  var reg = document.getElementById('dd-register');
+  var sum = document.getElementById('dd-summary');
+  var rev = document.getElementById('dd-review');
+  if(reg) reg.classList.add('hidden');
+  if(sum) sum.classList.add('hidden');
+  if(rev) rev.classList.add('hidden');
+  document.getElementById('dd-ticket-number').textContent = ticketNumber || '';
+  document.getElementById('dd-success-detail').textContent =
+    (ticket && location) ? (ticket + ' — ' + location) : 'Your registration is confirmed.';
+  document.getElementById('dd-success').classList.remove('hidden');
+  document.getElementById('dd-success').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+(function verifyReturn(){
+  var params = new URLSearchParams(window.location.search);
+  var reference = params.get('reference') || params.get('trxref');
+  if(!reference) return;
+  var successEl = document.getElementById('dd-success');
+  var reg = document.getElementById('dd-register');
+  if(reg) reg.classList.add('hidden');
+  successEl.classList.remove('hidden');
+  document.getElementById('dd-ticket-number').textContent = 'Confirming payment...';
+  // Clean the reference out of the address bar without reloading.
+  window.history.replaceState({}, document.title, window.location.pathname);
+  fetch('/api/doorsanddeals-verify?reference=' + encodeURIComponent(reference))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data && data.ok){
+        showSuccess(data.ticketNumber, data.ticket, data.location);
+      } else {
+        document.getElementById('dd-ticket-number').textContent = '';
+        document.getElementById('dd-success-detail').textContent =
+          apiError(data, 'We could not confirm your payment. If you were charged, contact us and we will sort it out.');
+      }
+    })
+    .catch(function(){
+      document.getElementById('dd-ticket-number').textContent = '';
+      document.getElementById('dd-success-detail').textContent =
+        'Network error while confirming. If you were charged, use Resume Payment above or contact us.';
+    });
+})();
 </script>
 </body>
 </html>
