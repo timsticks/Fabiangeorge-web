@@ -245,6 +245,7 @@
       <p class="font-display text-2xl">Check Your Details</p>
       <p class="mt-1 text-sm" style="color:rgba(250,249,244,0.6);">Confirm everything below is correct before proceeding to payment.</p>
       <div id="dd-review-rows" class="mt-5"></div>
+      <div id="dd-review-notice" class="hidden mt-5 rounded-xl px-4 py-3.5 text-sm font-semibold" role="alert"></div>
       <div class="mt-7 flex flex-col sm:flex-row gap-3">
         <button id="dd-edit-back" class="flex-1 rounded-full py-3.5 font-bold text-sm" style="border:1.5px solid rgba(250,249,244,0.35); color:var(--white);">&larr; Edit Details</button>
         <button id="dd-confirm-pay" class="flex-1 rounded-full py-3.5 font-bold text-sm" style="background:var(--yellow); color:var(--black);">Confirm &amp; Proceed to Payment</button>
@@ -272,6 +273,7 @@
         <input required type="email" name="email" placeholder="Enter your email to continue" class="flex-1 rounded-lg px-4 py-3 text-sm" style="background:rgba(10,10,10,0.06); border:1px solid rgba(10,10,10,0.2); color:var(--black);">
         <button type="submit" class="rounded-full px-6 py-3 font-bold text-sm" style="background:var(--black); color:var(--yellow);">Resume Payment</button>
       </form>
+      <div id="dd-resume-notice" class="hidden mt-3 rounded-xl px-4 py-3.5 text-sm font-semibold" role="alert"></div>
     </div>
   </div>
 </section>
@@ -310,6 +312,51 @@ function naira(n){ return '₦' + Number(n || 0).toLocaleString('en-NG'); }
 function apiError(data, fallback){
   if(data && data.errors) return data.errors.map(function(er){ return er.message; }).join(', ');
   return fallback;
+}
+
+/* ---------- inline notices (no browser pop-ups) ---------- */
+function setNotice(id, msg, kind){
+  var el = document.getElementById(id);
+  if(!el) return;
+  if(!msg){
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    return;
+  }
+  var isError = kind !== 'info';
+  if(id === 'dd-review-notice'){
+    el.style.background = isError ? 'rgba(179,18,27,0.18)' : 'rgba(255,212,0,0.10)';
+    el.style.border = '1.5px solid ' + (isError ? '#B3121B' : '#FFD400');
+    el.style.color = isError ? '#FFC9C9' : '#FFE87A';
+  } else {
+    el.style.background = '#ffffff';
+    el.style.border = '1.5px solid ' + (isError ? '#B3121B' : '#0A0A0A');
+    el.style.color = isError ? '#B3121B' : '#0A0A0A';
+  }
+  el.innerHTML = escapeHtml(msg);
+  el.classList.remove('hidden');
+}
+function showReviewNotice(msg, kind){ setNotice('dd-review-notice', msg, kind); }
+function showResumeNotice(msg, kind){ setNotice('dd-resume-notice', msg, kind); }
+var pendingResumeUrl = null;
+function showResumeNoticeWithAction(msg, actionLabel){
+  var el = document.getElementById('dd-resume-notice');
+  if(!el){ return; }
+  el.style.background = '#0A0A0A';
+  el.style.border = '1.5px solid #0A0A0A';
+  el.style.color = '#FAF9F4';
+  el.innerHTML = '';
+  var p = document.createElement('p');
+  p.textContent = msg;
+  el.appendChild(p);
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = actionLabel;
+  btn.style.cssText = 'margin-top:12px; background:#FFD400; color:#0A0A0A; font-weight:700; border-radius:999px; padding:12px 24px; font-size:13px; width:100%;';
+  btn.addEventListener('click', function(){ if(pendingResumeUrl) window.location.href = pendingResumeUrl; });
+  el.appendChild(btn);
+  el.classList.remove('hidden');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 /* ---------- registration: details -> crosscheck -> saved (Interested) -> Paystack ---------- */
@@ -515,7 +562,9 @@ if(confirmBtn){
         showAlreadyRegistered(data.registrations);
         confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
       } else if(response.status === 409 && data && data.pending){
-        alert(apiError(data, 'You already started a registration for that city.'));
+        var pendingMsg = apiError(data, 'You already started a registration for that city.');
+        showReviewNotice(pendingMsg, 'info');
+        showResumeNotice(pendingMsg, 'info');
         var resumeBox = document.getElementById('dd-resume');
         if(resumeBox){
           var resumeEmail = resumeBox.querySelector('input[name="email"]');
@@ -524,11 +573,11 @@ if(confirmBtn){
         }
         confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
       } else {
-        alert(apiError(data, 'Something went wrong. Please try again.'));
+        showReviewNotice(apiError(data, 'Something went wrong. Please try again.'), 'error');
         confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
       }
     } catch(err){
-      alert('Network error, please check your connection and try again.');
+      showReviewNotice('Network error, please check your connection and try again.', 'error');
       confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
     }
   });
@@ -551,10 +600,12 @@ if(resumeForm){
     if(btn){ btn.textContent = 'Checking...'; btn.disabled = true; }
     var email = String(new FormData(resumeForm).get('email') || '').trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      alert('Please enter a valid email address.');
+      showResumeNotice('Please enter a valid email address.', 'error');
       if(btn){ btn.textContent = label; btn.disabled = false; }
       return;
     }
+    showResumeNotice('', 'error');
+    pendingResumeUrl = null;
     try{
       var response = await fetch('/api/doorsanddeals-resume', {
         method: 'POST',
@@ -568,16 +619,24 @@ if(resumeForm){
           if(btn){ btn.textContent = label; btn.disabled = false; }
         } else if(data.free){
           showSuccess(data.ticketNumber, '', '');
+        } else if(data.authorization_url){
+          if(data.priceChanged){
+            pendingResumeUrl = data.authorization_url;
+            showResumeNoticeWithAction('Note: the price changed since you first registered (' + naira(data.amount) + ', ' + data.tier + ').', 'Continue to Payment');
+            if(btn){ btn.textContent = label; btn.disabled = false; }
+          } else {
+            window.location.href = data.authorization_url;
+          }
         } else {
-          if(data.priceChanged) alert('Note: the price changed since you first registered (' + naira(data.amount) + ', ' + data.tier + ').');
-          window.location.href = data.authorization_url;
+          showResumeNotice(apiError(data, 'Something went wrong. Please try again.'), 'error');
+          if(btn){ btn.textContent = label; btn.disabled = false; }
         }
       } else {
-        alert(apiError(data, 'Something went wrong. Please try again.'));
+        showResumeNotice(apiError(data, 'Something went wrong. Please try again.'), 'error');
         if(btn){ btn.textContent = label; btn.disabled = false; }
       }
     } catch(err){
-      alert('Network error, please check your connection and try again.');
+      showResumeNotice('Network error, please check your connection and try again.', 'error');
       if(btn){ btn.textContent = label; btn.disabled = false; }
     }
   });
@@ -597,6 +656,8 @@ function showSuccess(ticketNumber, ticket, location){
   if(reg) reg.classList.add('hidden');
   if(sum) sum.classList.add('hidden');
   if(rev) rev.classList.add('hidden');
+  setNotice('dd-review-notice', '', 'error');
+  setNotice('dd-resume-notice', '', 'error');
   document.getElementById('dd-ticket-number').textContent = ticketNumber || '';
   document.getElementById('dd-success-detail').textContent =
     (ticket && location) ? (ticket + ' — ' + location) : 'Your registration is confirmed.';
@@ -612,6 +673,8 @@ function showAlreadyRegistered(registrations){
   if(reg) reg.classList.add('hidden');
   if(sum) sum.classList.add('hidden');
   if(rev) rev.classList.add('hidden');
+  setNotice('dd-review-notice', '', 'error');
+  setNotice('dd-resume-notice', '', 'error');
   var list = Array.isArray(registrations) ? registrations : [];
   if(list.length === 1 && list[0].ticketNumber){
     document.getElementById('dd-ticket-number').textContent = list[0].ticketNumber;
