@@ -511,6 +511,18 @@ if(confirmBtn){
           document.getElementById('dd-summary').classList.remove('hidden');
           document.getElementById('dd-summary').scrollIntoView({behavior:'smooth', block:'center'});
         }
+      } else if(response.status === 409 && data && data.alreadyRegistered){
+        showAlreadyRegistered(data.registrations);
+        confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
+      } else if(response.status === 409 && data && data.pending){
+        alert(apiError(data, 'You already started a registration for that city.'));
+        var resumeBox = document.getElementById('dd-resume');
+        if(resumeBox){
+          var resumeEmail = resumeBox.querySelector('input[name="email"]');
+          if(resumeEmail && pendingPayload && pendingPayload.email) resumeEmail.value = pendingPayload.email;
+          resumeBox.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+        confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
       } else {
         alert(apiError(data, 'Something went wrong. Please try again.'));
         confirmBtn.textContent = originalLabel; confirmBtn.disabled = false;
@@ -537,7 +549,12 @@ if(resumeForm){
     var btn = resumeForm.querySelector('button[type="submit"]');
     var label = btn ? btn.textContent : '';
     if(btn){ btn.textContent = 'Checking...'; btn.disabled = true; }
-    var email = new FormData(resumeForm).get('email');
+    var email = String(new FormData(resumeForm).get('email') || '').trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      alert('Please enter a valid email address.');
+      if(btn){ btn.textContent = label; btn.disabled = false; }
+      return;
+    }
     try{
       var response = await fetch('/api/doorsanddeals-resume', {
         method: 'POST',
@@ -546,7 +563,10 @@ if(resumeForm){
       });
       var data = await response.json().catch(function(){ return null; });
       if(response.ok && data && data.ok){
-        if(data.free){
+        if(data.alreadyRegistered){
+          showAlreadyRegistered(data.registrations);
+          if(btn){ btn.textContent = label; btn.disabled = false; }
+        } else if(data.free){
           showSuccess(data.ticketNumber, '', '');
         } else {
           if(data.priceChanged) alert('Note: the price changed since you first registered (' + naira(data.amount) + ', ' + data.tier + ').');
@@ -580,6 +600,34 @@ function showSuccess(ticketNumber, ticket, location){
   document.getElementById('dd-ticket-number').textContent = ticketNumber || '';
   document.getElementById('dd-success-detail').textContent =
     (ticket && location) ? (ticket + ' — ' + location) : 'Your registration is confirmed.';
+  document.getElementById('dd-success').classList.remove('hidden');
+  document.getElementById('dd-success').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* Already-paid lookup: "You've already been registered" + ticket number(s). */
+function showAlreadyRegistered(registrations){
+  var reg = document.getElementById('dd-register');
+  var sum = document.getElementById('dd-summary');
+  var rev = document.getElementById('dd-review');
+  if(reg) reg.classList.add('hidden');
+  if(sum) sum.classList.add('hidden');
+  if(rev) rev.classList.add('hidden');
+  var list = Array.isArray(registrations) ? registrations : [];
+  if(list.length === 1 && list[0].ticketNumber){
+    document.getElementById('dd-ticket-number').textContent = list[0].ticketNumber;
+    var sub = (list[0].ticket && list[0].location) ? (list[0].ticket + ' — ' + list[0].location) : '';
+    document.getElementById('dd-success-detail').textContent =
+      "You've already been registered for this event." + (sub ? ' ' + sub + '.' : '');
+  } else {
+    document.getElementById('dd-ticket-number').textContent = '';
+    var html = "<p>You've already been registered for this event. Your tickets:</p>";
+    html += '<div class="mt-4 grid gap-2">';
+    list.forEach(function(r){
+      html += '<div class="review-row"><span>' + escapeHtml(r.location || 'Event') + (r.ticket ? ' · ' + escapeHtml(r.ticket) : '') + '</span><strong>' + escapeHtml(r.ticketNumber || '') + '</strong></div>';
+    });
+    html += '</div>';
+    document.getElementById('dd-success-detail').innerHTML = html;
+  }
   document.getElementById('dd-success').classList.remove('hidden');
   document.getElementById('dd-success').scrollIntoView({behavior:'smooth', block:'center'});
 }

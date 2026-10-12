@@ -6,7 +6,9 @@
 
 import { quotePrice } from './_lib/pricing.js';
 import { lookupDiscount } from './_lib/discount.js';
-import { findPendingByEmail, updateRegistration } from './_lib/airtable.js';
+import { findPendingByEmail, findRegistrationsByEmail, updateRegistration } from './_lib/airtable.js';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,9 +16,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ errors: [{ message: 'Method not allowed.' }] });
   }
 
-  const email = String(req.body?.email || '').trim();
+  // Vercel usually parses JSON bodies, but handle a raw string just in case.
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { body = {}; }
+  }
+  const email = String(body?.email || '').trim();
   if (!email) {
     return res.status(400).json({ errors: [{ message: 'Please enter your email address.' }] });
+  }
+  if (!EMAIL_RE.test(email)) {
+    return res.status(400).json({ errors: [{ message: 'Please enter a valid email address.' }] });
   }
 
   const { PAYSTACK_SECRET_KEY } = process.env;
@@ -27,6 +37,22 @@ export default async function handler(req, res) {
   try {
     const pending = await findPendingByEmail(email);
     if (!pending) {
+      // No unpaid row — but they may already be PAID. In that case show
+      // their ticket(s) instead of a dead-end "not found" error.
+      const all = await findRegistrationsByEmail(email, 10);
+      const paid = all.filter((r) => r.fields && r.fields.Status === 'Registered' && r.fields['Ticket Number']);
+      if (paid.length > 0) {
+        return res.status(200).json({
+          ok: true,
+          alreadyRegistered: true,
+          registrations: paid.map((r) => ({
+            ticketNumber: r.fields['Ticket Number'],
+            ticket: r.fields.Ticket || '',
+            location: r.fields.Location || '',
+            name: r.fields.Name || '',
+          })),
+        });
+      }
       return res.status(404).json({
         errors: [{ message: 'No unpaid registration found for that email. Please register first.' }],
       });
@@ -52,6 +78,16 @@ export default async function handler(req, res) {
       'Amount Due': quote.total,
     });
 
+    // Use the freshly-typed email as the source of truth for Paystack:
+    // the stored f.Email should match, but if it is ever blank/malformed
+    // (old row, manual edit, whitespace) Paystack rejects the init with
+    // `"email" must be a valid email`. Fall back gracefully instead.
+    const payEmail = (String(f.Email || '').trim() || email).trim();
+    if (!EMAIL_RE.test(payEmail)) {
+      console.error('Resume has invalid email for record:', pending.id, JSON.stringify({ stored: f.Email, typed: email }));
+      return res.status(400).json({ errors: [{ message: 'That registration has an invalid email. Please contact us to fix it.' }] });
+    }
+
     const host = req.headers['x-forwarded-host'] || req.headers.host;
     const payRes = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
@@ -60,7 +96,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: f.Email,
+        email: payEmail,
         amount: quote.total * 100,
         callback_url: `https://${host}/doorsanddeals`,
         metadata: {

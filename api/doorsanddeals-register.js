@@ -7,7 +7,7 @@
 
 import { quotePrice, TICKET_TYPES, ACTIVE_CITIES } from './_lib/pricing.js';
 import { lookupDiscount } from './_lib/discount.js';
-import { createRegistration, updateRegistration } from './_lib/airtable.js';
+import { createRegistration, updateRegistration, findRegistrationByEmailAndCity } from './_lib/airtable.js';
 import { sendAdminNotification } from './_lib/email.js';
 import { finalizePaidRegistration } from './_lib/finalize.js';
 
@@ -46,6 +46,33 @@ export default async function handler(req, res) {
   }
 
   try {
+    // 0. Same email may register for MULTIPLE cities — but not twice for
+    // the SAME city. Catch that here so a second Lagos signup doesn't
+    // create a duplicate row (or a double charge).
+    const cleanEmail = String(email).trim();
+    const existing = await findRegistrationByEmailAndCity(cleanEmail, location);
+    if (existing) {
+      const ef = existing.fields || {};
+      if (ef.Status === 'Registered') {
+        return res.status(409).json({
+          errors: [{ message: 'You have already been registered for ' + location + '. Your ticket is shown below.' }],
+          alreadyRegistered: true,
+          registrations: [{
+            ticketNumber: ef['Ticket Number'] || '',
+            ticket: ef.Ticket || '',
+            location: ef.Location || location,
+            name: ef.Name || '',
+          }],
+        });
+      }
+      return res.status(409).json({
+        errors: [{ message: 'You already started a registration for ' + location + '. Use Resume Payment below with your email to continue.' }],
+        pending: true,
+        location,
+        ticket: ef.Ticket || '',
+      });
+    }
+
     // 1. Discount (at most one code — the form only has one field).
     const discount = await lookupDiscount(discountCode);
     if (discount && !discount.ok) {
@@ -61,7 +88,6 @@ export default async function handler(req, res) {
     }
 
     // 3. Save as Interested.
-    const cleanEmail = String(email).trim();
     const record = await createRegistration({
       Name: String(name).trim(),
       Phone: String(phone).trim(),
